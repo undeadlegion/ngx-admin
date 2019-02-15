@@ -1,4 +1,4 @@
-import { NbMenuItem } from '@nebular/theme';
+import { NbMenuItem } from '@nebular/theme'
 
 export const MENU_ITEMS: NbMenuItem[] = [
   {
@@ -6,6 +6,11 @@ export const MENU_ITEMS: NbMenuItem[] = [
     icon: 'home-outline',
     link: '/pages/dashboard',
     home: true,
+  },
+  {
+	title: 'Profiles',
+	icon: 'nb-person',
+	link: '/pages/profiles',
   },
   {
     title: 'FEATURES',
