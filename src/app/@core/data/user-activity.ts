@@ -17,6 +17,11 @@ export interface UserProfile {
 	lastName: string
 	userName: string
 	points: UserPoints
+	lastActive: string
+
+	// reminders
+	// picture
+	// tags
 }
 
 export interface UserPoints {
@@ -52,5 +57,5 @@ export interface Objective {
 
 export abstract class UserActivityData {
 	abstract getUserActivityData(period: string): Observable<UserActive[]>
-	abstract getUserProfiles(): Observable<UserProfile[]>
+	abstract getUserProfiles(filter: string): Observable<UserProfile[]>
 }

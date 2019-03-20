@@ -15,8 +15,8 @@ export class ECommerceUserActivityComponent implements OnDestroy {
 
 	userActivity: UserActive[] = []
 	userProfiles: UserProfile[] = []
-	type = 'month'
-	types = ['week', 'month', 'year']
+	type = 'active'
+	types = ['active', 'inactive', 'all']
 	currentTheme: string
 
 	constructor(private themeService: NbThemeService,
@@ -28,7 +28,7 @@ export class ECommerceUserActivityComponent implements OnDestroy {
 		})
 
 		this.getUserActivity(this.type)
-		this.getUserProfiles()
+		this.getUserProfiles(this.type)
 	}
 
 	getUserActivity(period: string) {
@@ -40,10 +40,10 @@ export class ECommerceUserActivityComponent implements OnDestroy {
 	}
 
 
-	getUserProfiles() {
-		this.userActivityService.getUserProfiles()
+	getUserProfiles(type: string) {
+		this.userActivityService.getUserProfiles(type)
 			.subscribe((profiles: UserProfile[]) => {
-				console.log('Loaded ', profiles.length ,'user profiles')
+				console.log('Loaded ', profiles.length , 'user profiles')
 				this.userProfiles = profiles
 			})
 	}

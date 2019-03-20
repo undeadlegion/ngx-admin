@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core'
 import { HttpClient } from '@angular/common/http'
 import { of as observableOf, from, Observable } from 'rxjs'
-import { tap } from 'rxjs/operators'
+import { tap, filter, map } from 'rxjs/operators'
 import { PeriodsService } from './periods.service'
 import { UserProfile, UserActive, UserActivityData } from '../data/user-activity'
+import * as moment from 'moment'
 
 @Injectable()
 export class UserActivityService extends UserActivityData {
@@ -55,11 +56,12 @@ export class UserActivityService extends UserActivityData {
 	}
 
 	private fetchUserProfiles(): Observable<UserProfile[]> {
+		console.log('FETCH user profiles')
 		const url = 'https://c3yqzrjoi8.execute-api.us-east-1.amazonaws.com/dev/tools/user?userName=*'
 		return this.http.get<UserProfile[]>(url)
 			.pipe(
 				tap(results => {
-						console.log('Before: ', results)
+						// console.log('Before: ', results)
 						results.sort((a: UserProfile, b: UserProfile) => {
 							if (a.firstName < b.firstName) {
 								return -1
@@ -73,29 +75,31 @@ export class UserActivityService extends UserActivityData {
 								return 0
 							}
 						})
-						console.log('Sorted: ', results)
+						// console.log('Sorted: ', results)
 					}),
 			)
-		// fetch(url)
-		// 	.then((results) => {
-		// 		console.log('success!')
-
-		// 		results.json().then((data) => {
-		// 			console.log('fetched profiles: ', data)
-		// 			console.log('profiles: ', userProfiles)
-		// 			const userNames: string[] = userProfiles.map((profile: any): string => {
-		// 				return profile.userName
-		// 			})
-		// 			return userProfiles
-		// 		})
-		// 	})
 	}
 
 	getUserActivityData(period: string): Observable<UserActive[]> {
 		return observableOf(this.data[period])
 	}
 
-	getUserProfiles(): Observable<UserProfile[]> {
+	getUserProfiles(type: string): Observable<UserProfile[]> {
+		console.log('getUserProfiles for: ', type)
+		const inactiveDate = moment().startOf('week').startOf('day').subtract(1, 'week').format()
 		return this.fetchUserProfiles()
+			.pipe(
+				map(results => {
+					return results.filter(profile => {
+						if (type === 'all') {
+							return true
+						} else if (type === 'active') {
+							return profile.lastActive >= inactiveDate
+						} else if (type === 'inactive') {
+							return profile.lastActive < inactiveDate
+						}
+					})
+				}),
+			)
 	}
 }

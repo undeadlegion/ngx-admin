@@ -9,7 +9,7 @@
 			<ul ngbDropdownMenu class="dropdown-menu">
 				<li class="dropdown-item"
 						*ngFor="let t of types"
-						(click)="getUserActivity(t); type = t">
+						(click)="getUserProfiles(t); type = t">
 					{{ t }}
 				</li>
 			</ul>
@@ -22,8 +22,8 @@
 					{{ item.firstName + ' ' + item.lastName }}
 				</div>
 				<div class="visited-pages-count">
-					<div class="title">Pages Visit</div>
-					<div class="value">{{ item.pagesVisitCount }}</div>
+					<div class="title">Last Active</div>
+					<div class="value">{{ item.lastActive }}</div>
 				</div>
 				<div class="visited-percentages">
 					<div class="title">New visits, %</div>
