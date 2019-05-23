@@ -1,0 +1,30 @@
+<nb-card *ngIf="userProfile">
+	<nb-card-header>
+		<span>Profile: {{ userProfile.firstName + ' ' + userProfile.lastName }}</span>
+	</nb-card-header>
+	<nb-card-body>
+		<span>Hello this is my profile</span>
+	</nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="userActions">
+	<nb-card-header>
+		<span>Metrics</span>
+	</nb-card-header>
+	<nb-card-body>
+		<span>These are my metrics</span>
+		<ul>
+			<li>Committed Days This Week {{metrics['committedDaysInWeek']}}</li>
+			<li>Completed Days This Week {{metrics['completedDaysInWeek']}}</li>
+		</ul>
+	</nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="userActions">
+	<nb-card-header>
+		<span>Actions</span>
+	</nb-card-header>
+	<nb-card-body>
+		<span>These are my actions</span>
+	</nb-card-body>
+</nb-card>

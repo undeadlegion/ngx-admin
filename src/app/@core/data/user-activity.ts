@@ -1,12 +1,5 @@
 import { Observable } from 'rxjs'
 
-export interface UserActive {
-	date: string
-	pagesVisitCount: number
-	deltaUp: boolean
-	newVisits: number
-}
-
 export interface UserProfile {
 	userID: string
 	endpointID: string
@@ -56,6 +49,8 @@ export interface Objective {
 }
 
 export abstract class UserActivityData {
-	abstract getUserActivityData(period: string): Observable<UserActive[]>
+	abstract getUserProfile(userID: string): Observable<UserProfile>
 	abstract getUserProfiles(filter: string): Observable<UserProfile[]>
+	abstract getUserActionsMap(): Observable<Map<string, ActionItem[]>>
+	abstract getUserActions(userID: string): Observable<ActionItem[]>
 }

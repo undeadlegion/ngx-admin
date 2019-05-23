@@ -3,56 +3,15 @@ import { HttpClient } from '@angular/common/http'
 import { of as observableOf, from, Observable } from 'rxjs'
 import { tap, filter, map } from 'rxjs/operators'
 import { PeriodsService } from './periods.service'
-import { UserProfile, UserActive, UserActivityData } from '../data/user-activity'
-import * as moment from 'moment'
+import { UserProfile, ActionItem, UserActivityData } from '../data/user-activity'
+import * as Moment from 'moment'
 
 @Injectable()
 export class UserActivityService extends UserActivityData {
-
-	private getRandom = (roundTo: number) => Math.round(Math.random() * roundTo)
-	private generateUserActivityRandomData(date) {
-		return {
-			date,
-			pagesVisitCount: this.getRandom(1000),
-			deltaUp: this.getRandom(1) % 2 === 0,
-			newVisits: this.getRandom(100),
-		}
-	}
-
 	data = {}
 
 	constructor(private http: HttpClient, private periods: PeriodsService) {
 		super()
-		this.data = {
-			week: this.getDataWeek(),
-			month: this.getDataMonth(),
-			year: this.getDataYear(),
-			profiles: this.fetchUserProfiles(),
-		}
-	}
-
-	private getDataWeek(): UserActive[] {
-		return this.periods.getWeeks().map((week) => {
-			return this.generateUserActivityRandomData(week)
-		})
-	}
-
-	private getDataMonth(): UserActive[] {
-		const currentDate = new Date()
-		const days = currentDate.getDate()
-		const month = this.periods.getMonths()[currentDate.getMonth()]
-
-		return Array.from(Array(days)).map((_, index) => {
-			const date = `${index + 1} ${month}`
-
-			return this.generateUserActivityRandomData(date)
-		})
-	}
-
-	private getDataYear(): UserActive[] {
-		return this.periods.getYears().map((year) => {
-			return this.generateUserActivityRandomData(year)
-		})
 	}
 
 	private fetchUserProfiles(): Observable<UserProfile[]> {
@@ -79,14 +38,19 @@ export class UserActivityService extends UserActivityData {
 					}),
 			)
 	}
+	private fetchUserProfile(userName): Observable<UserProfile> {
+		console.log('FETCH user profiles')
+		const url = 'https://c3yqzrjoi8.execute-api.us-east-1.amazonaws.com/dev/tools/user?userName=' + userName
+		return this.http.get<UserProfile>(url)
+	}
 
-	getUserActivityData(period: string): Observable<UserActive[]> {
-		return observableOf(this.data[period])
+	getUserProfile(userName: string): Observable<UserProfile> {
+		return this.fetchUserProfile(userName)
 	}
 
 	getUserProfiles(type: string): Observable<UserProfile[]> {
 		console.log('getUserProfiles for: ', type)
-		const inactiveDate = moment().startOf('week').startOf('day').subtract(1, 'week').format()
+		const inactiveDate = Moment().startOf('week').startOf('day').subtract(1, 'week').format()
 		return this.fetchUserProfiles()
 			.pipe(
 				map(results => {
@@ -102,4 +66,38 @@ export class UserActivityService extends UserActivityData {
 				}),
 			)
 	}
+
+	getUserActionsMap(): Observable<Map<string, ActionItem[]>> {
+		const url = 'https://c3yqzrjoi8.execute-api.us-east-1.amazonaws.com/dev/tools/actions?userID=*'
+		return this.http.get<ActionItem[]>(url)
+			.pipe(
+				map(data => {
+					console.log('getUserActions data: ', data)
+					const userActions = new Map<string, ActionItem[]>()
+					for (const action of data['Items']) {
+						const userID = action.userID
+						let actions = userActions.get(userID)
+						actions = actions ? [action].concat(actions) : [action]
+						userActions.set(userID, actions)
+					}
+					console.log('getUserActions results: ', userActions)
+
+					return userActions
+				}),
+			)
+	}
+
+	getUserActions(userID: string): Observable<ActionItem[]> {
+		const url = 'https://c3yqzrjoi8.execute-api.us-east-1.amazonaws.com/dev/tools/actions?userID=' + userID
+		return this.http.get<ActionItem[]>(url)
+			.pipe(
+				map(data => {
+					console.log('getUserActions results: ', data['Items'].length)
+					return data['Items']
+				}),
+			)
+
+	}
+
+
 }

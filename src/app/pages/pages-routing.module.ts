@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core'
 import { PagesComponent } from './pages.component'
 import { DashboardComponent } from './dashboard/dashboard.component'
 import { ProfilesComponent } from './profiles/profiles.component'
+import { ProfileDetailComponent } from './profiles/profile-detail/profile-detail.component'
 
 const routes: Routes = [{
 	path: '',
@@ -16,6 +17,10 @@ const routes: Routes = [{
 		{
 			path: 'profiles',
 			component: ProfilesComponent,
+		},
+		{
+			path: 'profiles/:userName',
+			component: ProfileDetailComponent,
 		},
 		{
 			path: '',
