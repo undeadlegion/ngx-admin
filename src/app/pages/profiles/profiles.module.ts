@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { ThemeModule } from '../../@theme/theme.module'
+import { NbCardModule } from '@nebular/theme'
 import { RouterModule, Routes } from '@angular/router'
 
 import { ProfilesComponent } from './profiles.component'
@@ -12,6 +13,7 @@ import { ProfileDetailComponent } from './profile-detail/profile-detail.componen
 		CommonModule,
 		ThemeModule,
 		RouterModule,
+		NbCardModule,
 	],
 	declarations: [
 		ProfilesComponent,

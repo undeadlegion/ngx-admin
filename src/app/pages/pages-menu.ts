@@ -9,7 +9,7 @@ export const MENU_ITEMS: NbMenuItem[] = [
   },
   {
 	title: 'Profiles',
-	icon: 'nb-person',
+	icon: 'person-outline',
 	link: '/pages/profiles',
   },
   {

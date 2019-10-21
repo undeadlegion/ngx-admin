@@ -35,6 +35,7 @@ const socialLinks = [
 
 const DATA_SERVICES = [
   { provide: UserData, useClass: UserService },
+  { provide: UserActivityData, useClass: UserActivityService },
 ];
 
 export class NbSimpleRoleProvider extends NbRoleProvider {
@@ -48,22 +49,6 @@ export const NB_CORE_PROVIDERS = [
   ...MockDataModule.forRoot().providers,
   ...DATA_SERVICES,
   ...NbAuthModule.forRoot({
-		strategies: [
-			NbDummyAuthStrategy.setup({
-				name: 'email',
-				delay: 3000,
-			}),
-		],
-		forms: {
-			login: {
-				socialLinks: socialLinks,
-			},
-			register: {
-				socialLinks: socialLinks,
-			},
-		},
-	}).providers,
-
     strategies: [
       NbDummyAuthStrategy.setup({
         name: 'email',
@@ -98,6 +83,7 @@ export const NB_CORE_PROVIDERS = [
     provide: NbRoleProvider, useClass: NbSimpleRoleProvider,
   },
   AnalyticsService,
+  PeriodsService,
 ];
 
 @NgModule({
