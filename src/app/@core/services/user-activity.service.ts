@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http'
 import { of as observableOf, from, Observable } from 'rxjs'
 import { tap, filter, map } from 'rxjs/operators'
 import { PeriodsService } from './periods.service'
-import { UserProfile, ActionItem, UserActivityData } from '../data/user-activity'
+import { UserProfile, ActionItem, UserActivityData } from '../data/user-activity-data'
 import * as Moment from 'moment'
 
 @Injectable()

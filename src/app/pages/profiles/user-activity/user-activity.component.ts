@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core'
 import { NbThemeService } from '@nebular/theme'
 import { takeWhile } from 'rxjs/operators'
 
-import { UserProfile, UserActivityData, ActionItem } from '../../../@core/data/user-activity'
+import { UserProfile, UserActivityData, ActionItem } from '../../../@core/data/user-activity-data'
 
 @Component({
 	selector: 'ngx-user-activity',

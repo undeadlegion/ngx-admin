@@ -10,7 +10,7 @@ import { UserData } from './data/users';
 import { UserService } from './mock/users.service';
 import { MockDataModule } from './mock/mock-data.module';
 
-import { UserActivityData } from './data/user-activity'
+import { UserActivityData } from './data/user-activity-data'
 
 import { UserActivityService } from './services/user-activity.service'
 import { PeriodsService } from './services/periods.service'

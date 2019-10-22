@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Location } from '@angular/common'
-import { UserProfile, UserActivityData, ActionItem } from '../../../@core/data/user-activity'
+import { UserProfile, UserActivityData, ActionItem } from '../../../@core/data/user-activity-data'
 import * as Moment from 'moment'
 
 @Component({
