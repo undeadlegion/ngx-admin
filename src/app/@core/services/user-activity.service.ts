@@ -16,7 +16,7 @@ export class UserActivityService extends UserActivityData {
 
 	private fetchUserProfiles(): Observable<UserProfile[]> {
 		console.log('FETCH user profiles')
-		const url = 'https://c3yqzrjoi8.execute-api.us-east-1.amazonaws.com/dev/tools/user?userName=*'
+		const url = 'https://dev.api.avaactions.com/profiles_service/tools/user?userName=*'
 		return this.http.get<UserProfile[]>(url)
 			.pipe(
 				tap(results => {
@@ -40,7 +40,7 @@ export class UserActivityService extends UserActivityData {
 	}
 	private fetchUserProfile(userName): Observable<UserProfile> {
 		console.log('FETCH user profiles')
-		const url = 'https://c3yqzrjoi8.execute-api.us-east-1.amazonaws.com/dev/tools/user?userName=' + userName
+		const url = 'https://dev.api.avaactions.com/profiles_service/tools/user?userName=' + userName
 		return this.http.get<UserProfile>(url)
 	}
 
@@ -68,7 +68,7 @@ export class UserActivityService extends UserActivityData {
 	}
 
 	getUserActionsMap(): Observable<Map<string, ActionItem[]>> {
-		const url = 'https://c3yqzrjoi8.execute-api.us-east-1.amazonaws.com/dev/tools/actions?userID=*'
+		const url = 'https://dev.api.avaactions.com/goals_service/tools/goals?userID=*'
 		return this.http.get<ActionItem[]>(url)
 			.pipe(
 				map(data => {
@@ -88,12 +88,12 @@ export class UserActivityService extends UserActivityData {
 	}
 
 	getUserActions(userID: string): Observable<ActionItem[]> {
-		const url = 'https://c3yqzrjoi8.execute-api.us-east-1.amazonaws.com/dev/tools/actions?userID=' + userID
+		const url = 'https://dev.api.avaactions.com/goals_service/tools/goals?userID=' + userID
 		return this.http.get<ActionItem[]>(url)
 			.pipe(
 				map(data => {
-					console.log('getUserActions results: ', data['Items'].length)
-					return data['Items']
+					console.log('getUserActions results: ', data['actions'].length)
+					return data['actions']
 				}),
 			)
 
