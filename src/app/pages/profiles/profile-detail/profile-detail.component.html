@@ -20,13 +20,15 @@
 	</nb-card-body>
 </nb-card>
 
+<a routerLink="/pages/profiles/{{userName}}/messages">View Messages</a>
+
 <nb-card *ngIf="userSentMessages">
 	<nb-card-header>
 		<span>Messages</span>
 	</nb-card-header>
 	<nb-card-body>
 		<span>Messages this week</span>
-		<ul>
+		<ul *ngIf="userSentMessages.length">
 			<li> Sent: {{userSentMessages.length}}</li>
 			<li> Received: {{userReceivedMessages.length}}</li>
 		</ul>

@@ -11,6 +11,7 @@ import * as Moment from 'moment'
 })
 export class ProfileDetailComponent implements OnInit {
 
+	userName: String
 	userProfile: UserProfile
 	userActions: ActionItem[]
 	userSentMessages: Message[]
@@ -29,6 +30,7 @@ export class ProfileDetailComponent implements OnInit {
 
 	getUserData() {
 		const userName = this.route.snapshot.paramMap.get('userName')
+		this.userName = userName
 		console.log('[profile-detail] userName: ', userName)
 		this.userActivityService.getUserProfile(userName)
 			.subscribe((profile: UserProfile) => {
