@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http'
 import { of as observableOf, from, Observable } from 'rxjs'
 import { tap, filter, map } from 'rxjs/operators'
 import { PeriodsService } from './periods.service'
-import { UserProfile, ActionItem, UserActivityData } from '../data/user-activity-data'
+import { UserProfile, ActionItem, Message, UserActivityData } from '../data/user-activity-data'
 import * as Moment from 'moment'
 
 @Injectable()
@@ -99,5 +99,25 @@ export class UserActivityService extends UserActivityData {
 
 	}
 
+	getUserSentMessages(userID: string): Observable<Message[]> {
+		const url = 'https://dev.api.avaactions.com/messages_service/tools/messages?userID=' + userID + '&requestType=' + 'loadSentMessages'
+		return this.http.get<Message[]>(url)
+		.pipe(
+			map(data => {
+				console.log('[user-activity-service] getUserSentMessages', data)
+				return data['messages']
+			}),
+		)
+	}
 
+	getUserReceivedMessages(userID: string): Observable<Message[]> {
+		const url = 'https://dev.api.avaactions.com/messages_service/tools/messages?userID=' + userID + '&requestType=' + 'loadReceivedMessages'
+		return this.http.get<Message[]>(url)
+			.pipe(
+				map(data => {
+					console.log('[user-activity-service] getUserReceivedMessages', data)
+					return data['messages']
+				}),
+			)
+	}
 }

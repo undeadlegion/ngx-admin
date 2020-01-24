@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Location } from '@angular/common'
-import { UserProfile, UserActivityData, ActionItem } from '../../../@core/data/user-activity-data'
+import { UserProfile, UserActivityData, ActionItem, Message } from '../../../@core/data/user-activity-data'
 import * as Moment from 'moment'
 
 @Component({
@@ -13,7 +13,9 @@ export class ProfileDetailComponent implements OnInit {
 
 	userProfile: UserProfile
 	userActions: ActionItem[]
-	metrics = {}
+	userSentMessages: Message[]
+	userReceivedMessages: Message[]
+	userMetrics = {}
 
 	constructor(
 		private userActivityService: UserActivityData,
@@ -37,9 +39,20 @@ export class ProfileDetailComponent implements OnInit {
 					.subscribe((actions: ActionItem[]) => {
 						this.userActions = actions
 						this.calculateMetrics()
-						console.log('[profile-detail] loaded ', actions.length ,'actions ')
+						console.log('[profile-detail] loaded ', actions.length , 'actions ')
+					})
+				this.userActivityService.getUserSentMessages(profile.userID)
+					.subscribe((messages: Message[]) => {
+						this.userSentMessages = messages
+						console.log('[profile-detail] loaded ', messages.length , ' sent messages')
+					})
+				this.userActivityService.getUserReceivedMessages(profile.userID)
+					.subscribe((messages: Message[]) => {
+						this.userReceivedMessages = messages
+						console.log('[profile-detail] loaded ', messages.length, ' received messages')
 					})
 			})
+
 	}
 
 	calculateMetrics() {
@@ -76,10 +89,10 @@ export class ProfileDetailComponent implements OnInit {
 		// const averageCommitTimeInMonth = this.averageTime(actionsInMonth.map((action) => action.commitDate))
 		// const averageCompletionTimeInMonth = this.averageTime(actionsInMonth.map((action) => action.completionDate))
 
-		this.metrics['committedDaysInWeek'] = committedDaysInWeek
-		this.metrics['committedDaysInMonth'] = committedDaysInMonth
-		this.metrics['completedDaysInWeek'] = completedDaysInWeek
-		this.metrics['completedDaysInMonth'] = completedDaysInMonth
+		this.userMetrics['committedDaysInWeek'] = committedDaysInWeek
+		this.userMetrics['committedDaysInMonth'] = committedDaysInMonth
+		this.userMetrics['completedDaysInWeek'] = completedDaysInWeek
+		this.userMetrics['completedDaysInMonth'] = completedDaysInMonth
 
 	}
 

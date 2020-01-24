@@ -1,21 +1,34 @@
 <nb-card *ngIf="userProfile">
 	<nb-card-header>
-		<span>Profile: {{ userProfile.firstName + ' ' + userProfile.lastName }}</span>
+		<span>Profiles: {{ userProfile.firstName + ' ' + userProfile.lastName }}</span>
 	</nb-card-header>
 	<nb-card-body>
 		<span>Hello this is my profile</span>
 	</nb-card-body>
 </nb-card>
 
-<nb-card *ngIf="userActions">
+<nb-card *ngIf="userMetrics">
 	<nb-card-header>
 		<span>Metrics</span>
 	</nb-card-header>
 	<nb-card-body>
-		<span>These are my metrics</span>
+		<span>Missions this week</span>
 		<ul>
-			<li>Committed Days This Week {{metrics['committedDaysInWeek']}}</li>
-			<li>Completed Days This Week {{metrics['completedDaysInWeek']}}</li>
+			<li>Committed: {{userMetrics['committedDaysInWeek']}}</li>
+			<li>Completed: {{userMetrics['completedDaysInWeek']}}</li>
+		</ul>
+	</nb-card-body>
+</nb-card>
+
+<nb-card *ngIf="userSentMessages">
+	<nb-card-header>
+		<span>Messages</span>
+	</nb-card-header>
+	<nb-card-body>
+		<span>Messages this week</span>
+		<ul>
+			<li> Sent: {{userSentMessages.length}}</li>
+			<li> Received: {{userReceivedMessages.length}}</li>
 		</ul>
 	</nb-card-body>
 </nb-card>

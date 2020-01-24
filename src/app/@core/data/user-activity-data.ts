@@ -48,9 +48,23 @@ export interface Objective {
 	completionDate: string
 }
 
+export interface Message {
+	sourceID: string
+	sendDate: string
+	message: string
+	destinationID: string
+	initialDate: string
+	readDate: string
+	responseDate: string
+	messageType: string
+	triggerType: string
+}
+
 export abstract class UserActivityData {
 	abstract getUserProfile(userID: string): Observable<UserProfile>
 	abstract getUserProfiles(filter: string): Observable<UserProfile[]>
 	abstract getUserActionsMap(): Observable<Map<string, ActionItem[]>>
 	abstract getUserActions(userID: string): Observable<ActionItem[]>
+	abstract getUserSentMessages(userID: string): Observable<Message[]>
+	abstract getUserReceivedMessages(userID: string): Observable<Message[]>
 }
