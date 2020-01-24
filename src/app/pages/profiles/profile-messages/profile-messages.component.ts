@@ -10,11 +10,16 @@ interface TreeNode<T> {
   expanded?: boolean;
 }
 
-interface FSEntry {
-  name: string;
-  size: string;
-  kind: string;
-  items?: number;
+interface MessageRow {
+	messageType: string
+  sourceID?: string
+	sendDate?: string
+	message?: string
+	destinationID?: string
+	initialDate?: string
+	readDate?: string
+  responseDate?: string 
+	triggerType?: string
 }
 
 @Component({
@@ -23,11 +28,18 @@ interface FSEntry {
   styleUrls: ['./profile-messages.component.scss']
 })
 export class ProfileMessagesComponent {
-  customColumn = 'name';
-  defaultColumns = [ 'size', 'kind', 'items' ];
-  allColumns = [ this.customColumn, ...this.defaultColumns ];
-
-  dataSource: NbTreeGridDataSource<FSEntry>;
+  customColumn = 'messageType'
+  defaultColumns = [ 
+    'sendDate',
+    'sourceID',
+    'destinationID',
+    'intialDate',
+    'readDate',
+    'responseDate',
+    'message',
+    'triggerType'
+  ];
+  allColumns = [ this.customColumn, ...this.defaultColumns ]
 
   sortColumn: string;
   sortDirection: NbSortDirection = NbSortDirection.NONE;
@@ -35,33 +47,55 @@ export class ProfileMessagesComponent {
   userProfile: UserProfile
   userSentMessages: Message[]
   userReceivedMessages: Message[]
+
+  dataSource: NbTreeGridDataSource<MessageRow>
+  sentMessagesData: TreeNode<MessageRow>[]
   
   constructor(
-    private dataSourceBuilder: NbTreeGridDataSourceBuilder<FSEntry>,
+    private dataSourceBuilder: NbTreeGridDataSourceBuilder<MessageRow>,
     private userActivityService: UserActivityData,
 		private route: ActivatedRoute,
 		private location: Location,
   ) {
-    this.dataSource = this.dataSourceBuilder.create(this.data);
     this.getUserData()
   }
 
 	getUserData() {
 		const userName = this.route.snapshot.paramMap.get('userName')
-		console.log('[profile-detail] userName: ', userName)
+		console.log('[profile-messages] userName: ', userName)
 		this.userActivityService.getUserProfile(userName)
 			.subscribe((profile: UserProfile) => {
 				this.userProfile = profile
-				console.log('[profile-detail] loaded profile: ', profile.userID)
+				console.log('[profile-messages] loaded profile: ', profile.userID)
 				this.userActivityService.getUserSentMessages(profile.userID)
 					.subscribe((messages: Message[]) => {
 						this.userSentMessages = messages
-						console.log('[profile-detail] loaded ', messages.length , ' sent messages')
+            console.log('[messages-detail] loaded ', messages.length , ' sent messages')
+            console.log('[messages-detail] first message ', messages[0])
+
+            const sentMessageRows = this.userSentMessages.map((message): TreeNode<MessageRow> => { return {data: message } })
+
+            // create table data
+            this.sentMessagesData = [
+              {
+                data: { messageType: "Sent Messages", sendDate: "", sourceID: "", destinationID: "", initialDate: "", readDate: "", responseDate: "", message:"", triggerType: "",
+                },
+                children: sentMessageRows
+              },
+              {
+                data: { messageType: "Received Messages", sendDate: "", sourceID: "", destinationID: "", initialDate: "", readDate: "", responseDate: "", message:"", triggerType: "",
+                },
+                children: [
+                  { data: this.userSentMessages[0] }
+                ] 
+              }
+            ]
+            this.dataSource = this.dataSourceBuilder.create(this.sentMessagesData)
 					})
 				this.userActivityService.getUserReceivedMessages(profile.userID)
 					.subscribe((messages: Message[]) => {
 						this.userReceivedMessages = messages
-						console.log('[profile-detail] loaded ', messages.length, ' received messages')
+						console.log('[profile-messages] loaded ', messages.length, ' received messages')
 					})
 			})
 
@@ -78,32 +112,6 @@ export class ProfileMessagesComponent {
     }
     return NbSortDirection.NONE;
   }
-
-  private data: TreeNode<FSEntry>[] = [
-    {
-      data: { name: 'Projects', size: '1.8 MB', items: 5, kind: 'dir' },
-      children: [
-        { data: { name: 'project-1.doc', kind: 'doc', size: '240 KB' } },
-        { data: { name: 'project-2.doc', kind: 'doc', size: '290 KB' } },
-        { data: { name: 'project-3', kind: 'txt', size: '466 KB' } },
-        { data: { name: 'project-4.docx', kind: 'docx', size: '900 KB' } },
-      ],
-    },
-    {
-      data: { name: 'Reports', kind: 'dir', size: '400 KB', items: 2 },
-      children: [
-        { data: { name: 'Report 1', kind: 'doc', size: '100 KB' } },
-        { data: { name: 'Report 2', kind: 'doc', size: '300 KB' } },
-      ],
-    },
-    {
-      data: { name: 'Other', kind: 'dir', size: '109 MB', items: 2 },
-      children: [
-        { data: { name: 'backup.bkp', kind: 'bkp', size: '107 MB' } },
-        { data: { name: 'secret-note.txt', kind: 'txt', size: '2 MB' } },
-      ],
-    },
-  ];
 
   getShowOn(index: number) {
     const minWithForMultipleColumns = 400;
