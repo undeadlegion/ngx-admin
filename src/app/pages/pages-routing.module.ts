@@ -8,6 +8,8 @@ import { ProfileDetailComponent } from './profiles/profile-detail/profile-detail
 import { ProfileMessagesComponent } from './profiles/profile-messages/profile-messages.component'
 import { ProfileActionsComponent } from './profiles/profile-actions/profile-actions.component'
 
+import { UserProfileResolver } from '../@core/services/user-profile.resolver'
+
 const routes: Routes = [{
 	path: '',
 	component: PagesComponent,
@@ -31,6 +33,9 @@ const routes: Routes = [{
 		{
 			path: 'profiles/:userName/actions',
 			component: ProfileActionsComponent,
+			resolve: {
+				userProfile: UserProfileResolver
+			}
 		},
 		{
 			path: '',

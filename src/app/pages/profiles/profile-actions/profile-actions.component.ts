@@ -17,24 +17,18 @@ export class ProfileActionsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private userActivityService: UserActivityService) {
+    private userActivityService: UserActivityData) {
   }
 
   ngOnInit() {
+    this.userProfile = this.route.snapshot.data['userProfile']
     this.dataSource = new UserActionsDataSource(this.userActivityService)
-    const userName = this.route.snapshot.paramMap.get('userName')
-    this.getUserProfile(userName)
+    this.dataSource.loadActionItems(this.userProfile.userID)
+
+    console.log('[profile-actions] userProfile: ', this.userProfile) 
   }
 
-  getUserProfile(userName: string) {
-    this.userActivityService.getUserProfile(userName)
-      .subscribe((profile) => {
-        this.userProfile = profile
-        this.dataSource.loadActionItems(this.userProfile.userID)
-      })
-  }
-
-  onRowClicked(row) {
+  onRowClicked(row: any) {
     console.log(' row clicked: ' + row)
   }
 }

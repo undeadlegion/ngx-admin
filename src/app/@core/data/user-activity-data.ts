@@ -61,7 +61,7 @@ export interface Message {
 }
 
 export abstract class UserActivityData {
-	abstract getUserProfile(userID: string): Observable<UserProfile>
+	abstract getUserProfile(userName: string): Observable<UserProfile>
 	abstract getUserProfiles(filter: string): Observable<UserProfile[]>
 	abstract getUserActionsMap(): Observable<Map<string, ActionItem[]>>
 	abstract getUserActions(userID: string): Observable<ActionItem[]>

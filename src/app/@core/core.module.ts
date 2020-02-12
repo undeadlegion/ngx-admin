@@ -14,6 +14,7 @@ import { UserActivityData } from './data/user-activity-data'
 
 import { UserActivityService } from './services/user-activity.service'
 import { PeriodsService } from './services/periods.service'
+import { UserProfileResolver } from './services/user-profile.resolver'
 
 const socialLinks = [
   {
@@ -36,6 +37,7 @@ const socialLinks = [
 const DATA_SERVICES = [
   { provide: UserData, useClass: UserService },
   { provide: UserActivityData, useClass: UserActivityService },
+  { provide: UserProfileResolver, useClass: UserProfileResolver}
 ];
 
 export class NbSimpleRoleProvider extends NbRoleProvider {
