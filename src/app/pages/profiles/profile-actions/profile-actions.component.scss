@@ -2,15 +2,12 @@
 @import '~@nebular/theme/styles/global/typography/typography';
 
 @include nb-install-component() {
-    .split-col {
-        column-count: 2;
+    .spinner-container {
+        position: relative;
+        top: 200px;
     }
 
-    .align-right {
-        text-align: right;
-    }
-
-    .align-left {
-        text-align: left;
+    .mat-spinner {
+        margin: 0 auto;
     }
 }

@@ -6,6 +6,7 @@ import { DashboardComponent } from './dashboard/dashboard.component'
 import { ProfilesComponent } from './profiles/profiles.component'
 import { ProfileDetailComponent } from './profiles/profile-detail/profile-detail.component'
 import { ProfileMessagesComponent } from './profiles/profile-messages/profile-messages.component'
+import { ProfileActionsComponent } from './profiles/profile-actions/profile-actions.component'
 
 const routes: Routes = [{
 	path: '',
@@ -26,6 +27,10 @@ const routes: Routes = [{
 		{
 			path: 'profiles/:userName/messages',
 			component: ProfileMessagesComponent,
+		},
+		{
+			path: 'profiles/:userName/actions',
+			component: ProfileActionsComponent,
 		},
 		{
 			path: '',

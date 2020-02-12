@@ -12,7 +12,7 @@
 		<span>Metrics</span>
 	</nb-card-header>
 	<nb-card-body>
-		<span>Missions this week</span>
+		<span>Missions this week:</span>
 		<ul>
 			<li>Committed: {{userMetrics['committedDaysInWeek']}}</li>
 			<li>Completed: {{userMetrics['completedDaysInWeek']}}</li>
@@ -20,24 +20,36 @@
 	</nb-card-body>
 </nb-card>
 
-<a routerLink="/pages/profiles/{{userName}}/messages">View Messages</a>
-
 <nb-card *ngIf="userSentMessages">
 	<nb-card-header>
-		<span>Messages</span>
+		<div class="split-col">
+			<div class="align-left">
+				Messages
+			</div>
+			<div class="align-right">
+				<a routerLink="/pages/profiles/{{userName}}/messages">View Messages</a>
+			</div>
+		</div>
 	</nb-card-header>
 	<nb-card-body>
-		<span>Messages this week</span>
-		<ul *ngIf="userSentMessages.length">
-			<li> Sent: {{userSentMessages.length}}</li>
-			<li> Received: {{userReceivedMessages.length}}</li>
+		<span>Messages this week:</span>
+		<ul>
+			<li *ngIf="userSentMessages && userSentMessages.length"> Sent: {{userSentMessages.length}}</li>
+			<li *ngIf="userReceivedMessages && userReceivedMessages.length"> Received: {{userReceivedMessages.length}}</li>
 		</ul>
 	</nb-card-body>
 </nb-card>
 
 <nb-card *ngIf="userActions">
 	<nb-card-header>
-		<span>Actions</span>
+		<div class="split-col">
+			<div class="align-left">
+				Actions
+			</div>
+			<div class="align-right">
+				<a routerLink="/pages/profiles/{{userName}}/actions">View Actions</a>
+			</div>
+		</div>
 	</nb-card-header>
 	<nb-card-body>
 		<span>These are my actions</span>
