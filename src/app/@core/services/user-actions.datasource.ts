@@ -1,9 +1,10 @@
 import { CollectionViewer, DataSource } from "@angular/cdk/collections";
-import { Observable, BehaviorSubject, of } from "rxjs";
+import { Observable, BehaviorSubject, of, Subject } from "rxjs";
+import { tap } from 'rxjs/operators'
 import { ActionItem } from "../data/user-activity-data";
 import { UserActivityService } from "./user-activity.service";
 import { UserActivityData } from "../data/user-activity-data";
-import { catchError, finalize } from "rxjs/operators";
+import { catchError, finalize, take } from "rxjs/operators";
 
 export class UserActionsDataSource implements DataSource<ActionItem> {
 
@@ -17,9 +18,10 @@ export class UserActionsDataSource implements DataSource<ActionItem> {
 
     }
 
-    loadActionItems(userID: string) {
+    loadActionItems(userID: string): Observable<ActionItem[]> {
         this.loadingSubject.next(true)
 
+        const subject = new Subject<ActionItem[]>()
         this.userActivityService.getUserActions(userID).pipe(
             catchError(() => of([])),
             finalize(() => this.loadingSubject.next(false))
@@ -27,7 +29,10 @@ export class UserActionsDataSource implements DataSource<ActionItem> {
         .subscribe(actionItems => {
             console.log('[DataSource] loaded ', actionItems)
             this.actionItemsSubject.next(actionItems)
+            subject.next(actionItems)
         })
+
+        return subject.asObservable().pipe(take(1))
     }
 
     connect(collectionViewer: CollectionViewer): Observable<ActionItem[]> {
