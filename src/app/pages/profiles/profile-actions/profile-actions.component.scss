@@ -2,12 +2,14 @@
 @import '~@nebular/theme/styles/global/typography/typography';
 
 @include nb-install-component() {
-    .spinner-container {
+    .container {
         position: relative;
-        top: 200px;
     }
 
-    .mat-spinner {
-        margin: 0 auto;
+    .spinner-container {
+        position: absolute;
+        top: 150px;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }

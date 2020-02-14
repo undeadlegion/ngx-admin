@@ -4,7 +4,7 @@ import { tap } from 'rxjs/operators'
 import { ActionItem } from "../data/user-activity-data";
 import { UserActivityService } from "./user-activity.service";
 import { UserActivityData } from "../data/user-activity-data";
-import { catchError, finalize, take } from "rxjs/operators";
+import { catchError, finalize, map, take } from "rxjs/operators";
 
 export class UserActionsDataSource implements DataSource<ActionItem> {
 
@@ -27,7 +27,35 @@ export class UserActionsDataSource implements DataSource<ActionItem> {
             finalize(() => this.loadingSubject.next(false))
         )
         .subscribe(actionItems => {
-            console.log('[DataSource] loaded ', actionItems)
+            console.log('[datasource: user-actions] loaded ', actionItems)
+            this.actionItemsSubject.next(actionItems)
+            subject.next(actionItems)
+        })
+
+        return subject.asObservable().pipe(take(1))
+    }
+
+    loadSortedActionItems(userID: string, asc: string): Observable<ActionItem[]> {
+        this.loadingSubject.next(true)
+
+        const subject = new Subject<ActionItem[]>()
+        this.userActivityService.getUserActions(userID).pipe(
+            map(actions => { 
+                return actions.sort((a, b) => { 
+                    if (a.propertyKey < b.propertyKey) {
+                        return asc === 'asc' ? -1 : 1
+                    } else if (a.propertyKey > b.propertyKey) {
+                        return asc === 'asc' ? 1 : -1
+                    } else {
+                        return 0
+                    }
+                }) 
+            }),
+            catchError(() => of([])),
+            finalize(() => this.loadingSubject.next(false))
+        )
+        .subscribe(actionItems => {
+            console.log('[datasource: user-actions] loaded ', actionItems.length, ' action items')
             this.actionItemsSubject.next(actionItems)
             subject.next(actionItems)
         })
@@ -36,11 +64,12 @@ export class UserActionsDataSource implements DataSource<ActionItem> {
     }
 
     connect(collectionViewer: CollectionViewer): Observable<ActionItem[]> {
-        console.log('[DataSource] connected to action items subject');
+        console.log('[datasource: user-actions] connect');    
         return this.actionItemsSubject.asObservable();
     }
 
     disconnect(collectionViewer: CollectionViewer): void {
+        console.log('[datasource: user-actions] disconnect');
         this.actionItemsSubject.complete();
         this.loadingSubject.complete();
     }
