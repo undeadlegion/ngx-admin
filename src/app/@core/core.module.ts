@@ -15,6 +15,9 @@ import { UserActivityData } from './data/user-activity-data'
 import { UserActivityService } from './services/user-activity.service'
 import { PeriodsService } from './services/periods.service'
 import { UserProfileResolver } from './services/user-profile.resolver'
+import { HTTP_INTERCEPTORS } from '@angular/common/http'
+import { RequestCacheInterceptor } from './services/request-cache.interceptor'
+import { RequestCacheService } from './services/request-cache.service'
 
 const socialLinks = [
   {
@@ -34,10 +37,15 @@ const socialLinks = [
   },
 ];
 
-const DATA_SERVICES = [
+const DATA_SERVICE_PROVIDERS = [
   { provide: UserData, useClass: UserService },
   { provide: UserActivityData, useClass: UserActivityService },
-  { provide: UserProfileResolver, useClass: UserProfileResolver}
+  { provide: UserProfileResolver, useClass: UserProfileResolver },
+  { provide: RequestCacheService, useClass: RequestCacheService },
+];
+
+const INTERCEPTOR_PROVIDERS = [
+  { provide: HTTP_INTERCEPTORS, useClass: RequestCacheInterceptor, multi: true },
 ];
 
 export class NbSimpleRoleProvider extends NbRoleProvider {
@@ -49,7 +57,8 @@ export class NbSimpleRoleProvider extends NbRoleProvider {
 
 export const NB_CORE_PROVIDERS = [
   ...MockDataModule.forRoot().providers,
-  ...DATA_SERVICES,
+  ...DATA_SERVICE_PROVIDERS,
+  ...INTERCEPTOR_PROVIDERS,
   ...NbAuthModule.forRoot({
     strategies: [
       NbDummyAuthStrategy.setup({

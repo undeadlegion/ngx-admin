@@ -57,6 +57,10 @@
     @include nb-rtl(margin-right, 2rem);
   }
 
+  nb-select {
+    margin-right: 1rem;
+  }
+
   @include media-breakpoint-down(sm) {
     .control-item {
       display: none;

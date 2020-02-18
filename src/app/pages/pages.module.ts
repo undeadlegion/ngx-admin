@@ -12,8 +12,8 @@ import { ProfilesModule } from './profiles/profiles.module'
     PagesRoutingModule,
     ThemeModule,
     NbMenuModule,
-	DashboardModule,
-	ProfilesModule,
+	  DashboardModule,
+	  ProfilesModule,
   ],
   declarations: [
     PagesComponent,
