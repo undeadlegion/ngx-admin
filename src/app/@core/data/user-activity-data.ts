@@ -42,10 +42,14 @@ export interface ActionItem {
 }
 
 export interface Objective {
-	completed: boolean
+	status: string
 	text: string
 	editDate: string
 	completionDate: string
+	// NOTE: additional properties
+	// tags
+	// progress records
+	// photo records
 }
 
 export interface Message {

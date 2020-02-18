@@ -6,6 +6,19 @@
         position: relative;
     }
 
+    .flex-container {
+        display: flex;
+        align-items: center;
+    }
+
+    i {
+        margin: 0.1rem 0.5rem 0.1rem 0;
+    }
+    
+    .w-100 {
+        width: 100%;
+    }
+
     .spinner-container {
         position: absolute;
         top: 150px;

@@ -1,7 +1,6 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserActionsDataSource } from '../../../@core/services/user-actions.datasource';
-import { UserActivityService } from '../../../@core/services/user-activity.service';
 import { UserActivityData, ActionItem } from '../../../@core/data/user-activity-data';
 import { UserProfile } from '../../../@core/data/user-activity-data';
 import { MatPaginator, MatSort } from '@angular/material';
@@ -50,6 +49,6 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
   }
 
   onRowClicked(row: any) {
-    console.log(' row clicked: ' + row)
+    console.log(' row clicked: ' + JSON.stringify(row, null, 2))
   }
 }
