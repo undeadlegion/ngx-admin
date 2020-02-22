@@ -1,9 +1,20 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { ReactiveFormsModule } from "@angular/forms";
 import { ThemeModule } from '../../@theme/theme.module'
-import { MatTableModule, MatPaginatorModule, MatProgressSpinnerModule, MatSortModule } from '@angular/material'
-import { NbCardModule, NbIconModule, NbTreeGridModule } from '@nebular/theme'
-import { RouterModule, Routes } from '@angular/router'
+import {
+	MatCardModule,
+	MatDatepickerModule,
+	MatFormFieldModule,
+	MatInputModule,
+	MatPaginatorModule,
+	MatProgressSpinnerModule,
+	MatSortModule,
+	MatTableModule,
+} from '@angular/material'
+import { MatMomentDateModule } from '@angular/material-moment-adapter'
+import { NbCardModule, NbDatepickerModule, NbIconModule, NbTreeGridModule } from '@nebular/theme'
+import { RouterModule } from '@angular/router'
 
 import { ProfilesComponent } from './profiles.component'
 import { ECommerceUserActivityComponent } from './user-activity/user-activity.component'
@@ -14,15 +25,22 @@ import { ProfileActionsComponent } from './profile-actions/profile-actions.compo
 @NgModule({
 	imports: [
 		CommonModule,
-		ThemeModule,
-		RouterModule,
-		MatTableModule,
-		NbCardModule,
-		NbIconModule,
-		NbTreeGridModule,
+		MatCardModule,
+		MatDatepickerModule,
+		MatFormFieldModule,
+		MatInputModule,
+		MatMomentDateModule,
 		MatPaginatorModule,
 		MatProgressSpinnerModule,
 		MatSortModule,
+		MatTableModule,
+		NbCardModule,
+		NbDatepickerModule,
+		NbIconModule,
+		NbTreeGridModule,
+		ReactiveFormsModule,
+		RouterModule,
+		ThemeModule,
 	],
 	declarations: [
 		ProfilesComponent,

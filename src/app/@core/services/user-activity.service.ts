@@ -93,7 +93,7 @@ export class UserActivityService extends UserActivityData {
 	getUserActions(userID: string): Observable<ActionItem[]> {
 		const url = 'https://dev.api.avaactions.com/server_service/tools/goals'
 		const params = new HttpParams()
-			.set('userID', '*')
+			.set('userID', userID)
 			.set('start', '2020-01-01')
 
 		return this.http.get<ActionItem[]>(url, { params })
