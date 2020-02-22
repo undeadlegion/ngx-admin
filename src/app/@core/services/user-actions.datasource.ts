@@ -5,6 +5,14 @@ import { ActionItem } from "../data/user-activity-data";
 import { UserActivityService } from "./user-activity.service";
 import { UserActivityData } from "../data/user-activity-data";
 import { catchError, finalize, map, take } from "rxjs/operators";
+import { throwIfAlreadyLoaded } from '../module-import-guard';
+
+export interface LoadedActionItems {
+    items: ActionItem[]
+    pageIndex: number
+    pageSize: number
+    totalItems: number
+}
 
 export class UserActionsDataSource implements DataSource<ActionItem> {
 
@@ -35,29 +43,44 @@ export class UserActionsDataSource implements DataSource<ActionItem> {
         return subject.asObservable().pipe(take(1))
     }
 
-    loadSortedActionItems(userID: string, asc: string): Observable<ActionItem[]> {
+    loadSortedActionItems(userID: string, sortDirection: string, pageIndex: number, pageSize: number): Observable<LoadedActionItems> {
         this.loadingSubject.next(true)
 
-        const subject = new Subject<ActionItem[]>()
+        const subject = new Subject<LoadedActionItems>()
         this.userActivityService.getUserActions(userID).pipe(
-            map(actions => { 
-                return actions.sort((a, b) => { 
+            map((items: ActionItem[]) => {
+                return items.sort((a, b) => { 
                     if (a.propertyKey < b.propertyKey) {
-                        return asc === 'asc' ? -1 : 1
+                        return sortDirection === 'asc' ? -1 : 1
                     } else if (a.propertyKey > b.propertyKey) {
-                        return asc === 'asc' ? 1 : -1
+                        return sortDirection === 'asc' ? 1 : -1
                     } else {
                         return 0
                     }
-                }) 
+                })
+            }),
+            map((items: ActionItem[]) => {
+                const loaded: LoadedActionItems = {
+                    items: items,
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
+                    totalItems: items.length
+                }
+                return loaded
+            }),            
+            map((loaded: LoadedActionItems) => {
+                const startIndex = pageIndex * pageSize
+                const endIndex = startIndex + pageSize
+                loaded.items = loaded.items.slice(startIndex, endIndex)
+                return loaded
             }),
             catchError(() => of([])),
             finalize(() => this.loadingSubject.next(false))
         )
-        .subscribe(actionItems => {
-            console.log('[datasource: user-actions] loaded ', actionItems.length, ' action items')
-            this.actionItemsSubject.next(actionItems)
-            subject.next(actionItems)
+        .subscribe((loaded: LoadedActionItems) => {
+            console.log('[datasource: user-actions] loaded ', loaded.items.length, ' action items')
+            this.actionItemsSubject.next(loaded.items)
+            subject.next(loaded)
         })
 
         return subject.asObservable().pipe(take(1))

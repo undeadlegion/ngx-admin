@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router';
-import { UserActionsDataSource } from '../../../@core/services/user-actions.datasource';
+import { LoadedActionItems, UserActionsDataSource } from '../../../@core/services/user-actions.datasource';
 import { UserActivityData, ActionItem } from '../../../@core/data/user-activity-data';
 import { UserProfile } from '../../../@core/data/user-activity-data';
 import { MatPaginator, MatSort } from '@angular/material';
-import { tap } from 'rxjs/operators';
+import { delay, startWith, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import * as moment from 'moment';
 
@@ -37,7 +37,6 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
     console.log('[profile-actions] resolved userProfile: ', this.userProfile) 
 
     this.dataSource = new UserActionsDataSource(this.userActivityService)
-    this.loadUserActions('desc').subscribe(items => this.rowCount = items.length)
 
     this.startDate = new FormControl(moment())
     this.minStartDate = moment('2020-01-01')
@@ -47,14 +46,35 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
   ngAfterViewInit() {
     console.log('[profile-actions] ngAfterViewInit')
     this.sort.sortChange.pipe(
-      tap(() => console.log('[profile-actions] loading sorted actions')),
-      tap(() => this.loadUserActions(this.sort.direction))
+      tap(() => {
+        console.log('[profile-actions] loading sorted actions')
+        this.loadUserActions().subscribe()
+      })
+    ).subscribe()
+
+    this.paginator.page.pipe(
+      startWith(null),
+      delay(0),
+      tap(() => {
+        console.log('[profile-actions] loading page ', this.paginator.pageIndex)
+        this.loadUserActions().subscribe()
+      })
     ).subscribe()
   }
 
-  loadUserActions(asc: string): Observable<ActionItem[]> {
-    console.log('[profile-actions] loadUserActions: ', asc)
-    return this.dataSource.loadSortedActionItems(this.userProfile.userID, asc)
+  loadUserActions(): Observable<LoadedActionItems> {
+    console.log('[profile-actions] loadUserActions')
+    return this.dataSource.loadSortedActionItems(
+      this.userProfile.userID,
+      this.sort.direction,
+      this.paginator.pageIndex,
+      this.paginator.pageSize
+    ).pipe(
+      tap(loaded => {
+        console.log('[profile-actions] loaded ', loaded.items.length, '/', loaded.totalItems, ' total action items')
+        this.rowCount = loaded.totalItems
+      })
+    )
   }
 
   onRowClicked(row: any) {
