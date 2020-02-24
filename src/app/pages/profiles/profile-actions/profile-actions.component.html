@@ -5,13 +5,13 @@
   <mat-card class="header-container">
     <mat-form-field>
       <mat-label>Scope</mat-label>
-      <mat-select [(ngModel)]="selectedScope" name="scope">
+      <mat-select [formControl]="selectedScopeControl">
         <mat-option *ngFor="let scope of scopes" [value]="scope.value">{{scope.viewValue}}</mat-option>
       </mat-select>
     </mat-form-field>
     <mat-form-field>
       <mat-label>Start</mat-label>
-      <input matInput [matDatepicker]="startDatepicker" [formControl]="startDate" [min]="minStartDate" [max]="maxStartDate">
+      <input matInput [matDatepicker]="startDatepicker" [formControl]="startDateControl" [min]="minStartDate" [max]="maxStartDate">
       <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
       <mat-datepicker #startDatepicker></mat-datepicker>
     </mat-form-field>

@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs'
+import { Moment } from 'moment';
 
 export interface UserProfile {
 	userID: string
@@ -68,7 +69,7 @@ export abstract class UserActivityData {
 	abstract getUserProfile(userName: string): Observable<UserProfile>
 	abstract getUserProfiles(filter: string): Observable<UserProfile[]>
 	abstract getUserActionsMap(): Observable<Map<string, ActionItem[]>>
-	abstract getUserActions(userID: string): Observable<ActionItem[]>
+	abstract getUserActions(userID: string, start?: Moment, end?: Moment, scope?:string): Observable<ActionItem[]>
 	abstract getUserSentMessages(userID: string): Observable<Message[]>
 	abstract getUserReceivedMessages(userID: string): Observable<Message[]>
 }

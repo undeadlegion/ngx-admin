@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { Location } from '@angular/common'
 import { UserProfile, UserActivityData, ActionItem, Message } from '../../../@core/data/user-activity-data'
-import * as Moment from 'moment'
+import * as moment from 'moment'
 
 @Component({
 	selector: 'profile-detail',
@@ -36,8 +36,9 @@ export class ProfileDetailComponent implements OnInit {
 			.subscribe((profile: UserProfile) => {
 				this.userProfile = profile
 				console.log('[profile-detail] loaded profile: ', profile.userID)
-
-				this.userActivityService.getUserActions(profile.userID)
+				const startOfWeek = moment().startOf('week')
+				const today = moment()
+				this.userActivityService.getUserActions(profile.userID, startOfWeek, today)
 					.subscribe((actions: ActionItem[]) => {
 						this.userActions = actions
 						this.calculateMetrics()
@@ -59,23 +60,23 @@ export class ProfileDetailComponent implements OnInit {
 
 	calculateMetrics() {
 		// dates for action filters
-		const dayStart = Moment().startOf('day')
+		const dayStart = moment().startOf('day')
 
-		const weekStart = Moment().day(0)
+		const weekStart = moment().day(0)
 		const weekString = weekStart.toISOString().slice(0, 10) + '-D'
 
-		const monthStart = Moment().date(1)
+		const monthStart = moment().date(1)
 		const monthString = monthStart.toISOString().slice(0, 10) + '-D'
 
-		const month = Moment().month()
-		const dayOfMonth = Moment().date()
+		const month = moment().month()
+		const dayOfMonth = moment().date()
 		const totalDaysInMonth = monthStart.daysInMonth()
 
-		const startDate = Moment(this.userProfile.startDate).startOf('day').fromNow()
+		const startDate = moment(this.userProfile.startDate).startOf('day').fromNow()
 
 		// metrics for the week
 		const actionsInWeek = this.userActions.filter((item) => item.propertyKey >= weekString)
-		const dayOfWeek = Moment().day() + 1
+		const dayOfWeek = moment().day() + 1
 
 		const committedDaysInWeek = actionsInWeek.filter((action) => action.commitDate !== 'NULL').length
 		const completedDaysInWeek = actionsInWeek.filter((action) => action.completionDate !== 'NULL').length

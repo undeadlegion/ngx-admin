@@ -21,8 +21,9 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
   rowCount: number
   minStartDate: moment.Moment
   maxStartDate: moment.Moment
-  startDate: FormControl
-  selectedScope: string = 'day'
+  startDateControl: FormControl
+  selectedScopeControl: FormControl
+
   scopes = [
     { value: 'day', viewValue: 'Day'},
     { value: 'week', viewValue: 'Week'},
@@ -43,8 +44,8 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
     console.log('[profile-actions] resolved userProfile: ', this.userProfile) 
 
     this.dataSource = new UserActionsDataSource(this.userActivityService)
-
-    this.startDate = new FormControl(moment())
+    this.startDateControl = new FormControl(moment())
+    this.selectedScopeControl = new FormControl('day')
     this.minStartDate = moment('2020-01-01')
     this.maxStartDate = moment().add(1, 'months').endOf('month')
   }
@@ -66,12 +67,28 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
         this.loadUserActions().subscribe()
       })
     ).subscribe()
+
+    this.startDateControl.valueChanges.pipe(
+      tap(() => {
+        console.log('[profile-actions] start date changed: ', this.startDateControl.value)
+        this.loadUserActions().subscribe()
+      })
+    ).subscribe()
+
+    this.selectedScopeControl.valueChanges.pipe(
+      tap(() => {
+        console.log('[profile-actions] selected scope changed: ', this.selectedScopeControl.value)
+      })
+    ).subscribe()
   }
 
   loadUserActions(): Observable<LoadedActionItems> {
     console.log('[profile-actions] loadUserActions')
     return this.dataSource.loadSortedActionItems(
       this.userProfile.userID,
+      this.startDateControl.value,
+      moment(),
+      this.selectedScopeControl.value,
       this.sort.direction,
       this.paginator.pageIndex,
       this.paginator.pageSize

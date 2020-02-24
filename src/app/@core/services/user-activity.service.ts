@@ -4,7 +4,7 @@ import { of as observableOf, from, Observable } from 'rxjs'
 import { tap, filter, map } from 'rxjs/operators'
 import { PeriodsService } from './periods.service'
 import { UserProfile, ActionItem, Message, UserActivityData } from '../data/user-activity-data'
-import * as Moment from 'moment'
+import * as moment from 'moment'
 
 @Injectable()
 export class UserActivityService extends UserActivityData {
@@ -28,7 +28,7 @@ export class UserActivityService extends UserActivityData {
 	}
 
 	getUserProfiles(type: string): Observable<UserProfile[]> {
-		const inactiveDate = Moment().startOf('week').startOf('day').subtract(1, 'week').format()
+		const inactiveDate = moment().startOf('week').startOf('day').subtract(1, 'week').format()
 
 		const url = 'https://dev.api.avaactions.com/server_service/tools/user'
 		const params = new HttpParams()
@@ -90,11 +90,21 @@ export class UserActivityService extends UserActivityData {
 			)
 	}
 
-	getUserActions(userID: string): Observable<ActionItem[]> {
+	getUserActions(
+		userID: string,
+		start: moment.Moment,
+		end: moment.Moment,
+		scope: string = 'A'
+	): Observable<ActionItem[]> {
 		const url = 'https://dev.api.avaactions.com/server_service/tools/goals'
+
+		const startString = start.toISOString().slice(0, 10)
+		const endString = end.toISOString().slice(0, 10)
 		const params = new HttpParams()
 			.set('userID', userID)
-			.set('start', '2020-01-01')
+			.set('start', startString)
+			.set('end', endString)
+			.set('scope', scope)
 
 		return this.http.get<ActionItem[]>(url, { params })
 			.pipe(

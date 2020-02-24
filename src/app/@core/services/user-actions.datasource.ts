@@ -6,6 +6,7 @@ import { UserActivityService } from "./user-activity.service";
 import { UserActivityData } from "../data/user-activity-data";
 import { catchError, finalize, map, take } from "rxjs/operators";
 import { throwIfAlreadyLoaded } from '../module-import-guard';
+import { Moment } from 'moment';
 
 export interface LoadedActionItems {
     items: ActionItem[]
@@ -43,11 +44,19 @@ export class UserActionsDataSource implements DataSource<ActionItem> {
         return subject.asObservable().pipe(take(1))
     }
 
-    loadSortedActionItems(userID: string, sortDirection: string, pageIndex: number, pageSize: number): Observable<LoadedActionItems> {
+    loadSortedActionItems(
+        userID: string,
+        start: Moment,
+        end: Moment,
+        scope: string,
+        sortDirection: string,
+        pageIndex: number,
+        pageSize: number
+    ): Observable<LoadedActionItems> {
         this.loadingSubject.next(true)
 
         const subject = new Subject<LoadedActionItems>()
-        this.userActivityService.getUserActions(userID).pipe(
+        this.userActivityService.getUserActions(userID, start, end, scope).pipe(
             map((items: ActionItem[]) => {
                 return items.sort((a, b) => { 
                     if (a.propertyKey < b.propertyKey) {
