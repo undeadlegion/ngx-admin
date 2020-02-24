@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
-import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { ThemeModule } from '../../@theme/theme.module'
 import {
 	MatCardModule,
@@ -9,6 +9,7 @@ import {
 	MatInputModule,
 	MatPaginatorModule,
 	MatProgressSpinnerModule,
+	MatSelectModule,
 	MatSortModule,
 	MatTableModule,
 } from '@angular/material'
@@ -25,6 +26,7 @@ import { ProfileActionsComponent } from './profile-actions/profile-actions.compo
 @NgModule({
 	imports: [
 		CommonModule,
+		FormsModule,
 		MatCardModule,
 		MatDatepickerModule,
 		MatFormFieldModule,
@@ -32,6 +34,7 @@ import { ProfileActionsComponent } from './profile-actions/profile-actions.compo
 		MatMomentDateModule,
 		MatPaginatorModule,
 		MatProgressSpinnerModule,
+		MatSelectModule,
 		MatSortModule,
 		MatTableModule,
 		NbCardModule,

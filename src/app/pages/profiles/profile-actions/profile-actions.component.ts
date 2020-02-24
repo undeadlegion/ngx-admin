@@ -22,6 +22,12 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
   minStartDate: moment.Moment
   maxStartDate: moment.Moment
   startDate: FormControl
+  selectedScope: string = 'day'
+  scopes = [
+    { value: 'day', viewValue: 'Day'},
+    { value: 'week', viewValue: 'Week'},
+    { value: 'month', viewValue: 'Month'},
+  ]
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator
   @ViewChild(MatSort, {static: false}) sort: MatSort
