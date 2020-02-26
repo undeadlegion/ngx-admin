@@ -93,14 +93,15 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
     this.numberControl.valueChanges.pipe(
       tap(() => {
         console.log('[profile-actions] number changed: ', this.numberControl.value)
+        const number = this.selectedScopeControl.value === 'month' ? this.numberControl.value - 1 : this.numberControl.value
         const startDate = this.startDateFrom(
           this.selectedScopeControl.value,
           undefined,
-          this.numberControl.value)
+          number)
         const endDate = this.endDateFrom(
           this.selectedScopeControl.value,
           undefined,
-          this.numberControl.value)
+          number)
 
         this.startDateControl.setValue(startDate, {emitEvent: false})
         this.endDateControl.setValue(endDate, {emitEvent: false})
@@ -116,7 +117,8 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
           this.startDateControl.value)
         const endDate = this.endDateFrom(
           this.selectedScopeControl.value,
-          this.startDateControl.value)
+          this.startDateControl.value,
+          number)
 
         this.numberControl.setValue(number, {emitEvent: false})
         this.endDateControl.setValue(endDate, {emitEvent: false})
@@ -126,13 +128,14 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
 
     this.endDateControl.valueChanges.pipe(
       tap(() => {
-        console.log('[profile-actions] end date changed: ', this.endDateControl.value)
         const number = this.numberFrom(
           this.selectedScopeControl.value,
+          undefined,
           this.endDateControl.value)
         const startDate = this.startDateFrom(
           this.selectedScopeControl.value,
-          this.endDateControl.value)
+          this.endDateControl.value,
+          number)
 
         this.numberControl.setValue(number, {emitEvent: false})
         this.startDateControl.setValue(startDate, {emitEvent: false})
@@ -141,9 +144,13 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
     ).subscribe()
   }
 
-  numberFrom(scope: string, date?: moment.Moment): number {
-    const startDate = moment(date) || moment()
-    const number = startDate.get(scope as moment.unitOfTime.All)
+  numberFrom(scope: string, start?: moment.Moment, end?: moment.Moment): number {
+    let date = start && moment(start) || end && moment(end) || moment()
+    if (end != undefined) {
+      date.add(-1, 'day')
+    }
+
+    const number = date.get(scope as moment.unitOfTime.All)
     switch (scope) {
       case 'date':
         return number
@@ -191,6 +198,34 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
         return endDate
       default:
         return moment()
+    }
+  }
+
+  filterStartDate = (date: moment.Moment): boolean => {
+    const scope = this.selectedScopeControl.value
+    switch (scope) {
+      case 'date':
+        return true
+      case 'week':
+        return date.day() === 1
+      case 'month':
+        return date.date() === 1
+      default:
+        return false
+    }
+  }
+
+  filterEndDate = (date: moment.Moment): boolean => {
+    const scope = this.selectedScopeControl.value
+    switch (scope) {
+      case 'date':
+        return true
+      case 'week':
+        return date.day() === 0
+      case 'month':
+        return date.date() === date.daysInMonth()
+      default:
+        return false
     }
   }
 

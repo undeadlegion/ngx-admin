@@ -60,9 +60,9 @@ export class UserActionsDataSource implements DataSource<ActionItem> {
             map((items: ActionItem[]) => {
                 return items.sort((a, b) => { 
                     if (a.propertyKey < b.propertyKey) {
-                        return sortDirection === 'asc' ? -1 : 1
+                        return sortDirection === 'desc' ? -1 : 1
                     } else if (a.propertyKey > b.propertyKey) {
-                        return sortDirection === 'asc' ? 1 : -1
+                        return sortDirection === 'desc' ? 1 : -1
                     } else {
                         return 0
                     }
