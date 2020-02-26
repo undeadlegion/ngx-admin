@@ -83,7 +83,12 @@ export class UserActionsDataSource implements DataSource<ActionItem> {
                 loaded.items = loaded.items.slice(startIndex, endIndex)
                 return loaded
             }),
-            catchError(() => of([])),
+            catchError(() => of({
+                items: [],
+                pageIndex: 0,
+                pageSize: 0,
+                totalItems: 0
+            })),
             finalize(() => this.loadingSubject.next(false))
         )
         .subscribe((loaded: LoadedActionItems) => {

@@ -10,6 +10,10 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field>
+      <mat-label>Number</mat-label>
+      <input matInput type="number" [formControl]="numberControl">
+    </mat-form-field>
+    <mat-form-field>
       <mat-label>Start</mat-label>
       <input matInput [matDatepicker]="startDatepicker" [formControl]="startDateControl" [min]="minStartDate" [max]="maxStartDate">
       <mat-datepicker-toggle matSuffix [for]="startDatepicker"></mat-datepicker-toggle>
@@ -27,7 +31,7 @@
               matSort matSortActive="date" matSortDirection="desc" matSortDisableClear>
     <ng-container matColumnDef="date">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>Date</th>
-      <td mat-cell *matCellDef="let row"> {{row.propertyKey}} </td>
+      <td mat-cell class="date-cell" *matCellDef="let row"> {{row.propertyKey}} </td>
     </ng-container>
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef>Actions</th>

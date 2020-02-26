@@ -26,9 +26,10 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
   startDateControl: FormControl
   endDateControl: FormControl
   selectedScopeControl: FormControl
+  numberControl: FormControl
 
   scopes = [
-    { value: 'day', viewValue: 'Day'},
+    { value: 'date', viewValue: 'Day'},
     { value: 'week', viewValue: 'Week'},
     { value: 'month', viewValue: 'Month'},
   ]
@@ -49,7 +50,8 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
     this.dataSource = new UserActionsDataSource(this.userActivityService)
     this.startDateControl = new FormControl(moment())
     this.endDateControl = new FormControl(moment())
-    this.selectedScopeControl = new FormControl('day')
+    this.selectedScopeControl = new FormControl('date')
+    this.numberControl = new FormControl(moment().date())
     this.minStartDate = moment('2020-01-01')
     this.maxStartDate = moment().add(1, 'months').endOf('month')
     this.minEndDate = moment('2020-01-01')
@@ -74,9 +76,50 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
       })
     ).subscribe()
 
+    this.selectedScopeControl.valueChanges.pipe(
+      tap(() => {
+        console.log('[profile-actions] selected scope changed: ', this.selectedScopeControl.value)
+        const number = this.numberFrom(this.selectedScopeControl.value)
+        const startDate = this.startDateFrom(this.selectedScopeControl.value)
+        const endDate = this.endDateFrom(this.selectedScopeControl.value)
+
+        this.numberControl.setValue(number, {emitEvent: false})
+        this.startDateControl.setValue(startDate, {emitEvent: false})
+        this.endDateControl.setValue(endDate, {emitEvent: false})
+        this.loadUserActions().subscribe()
+      })
+    ).subscribe()
+
+    this.numberControl.valueChanges.pipe(
+      tap(() => {
+        console.log('[profile-actions] number changed: ', this.numberControl.value)
+        const startDate = this.startDateFrom(
+          this.selectedScopeControl.value,
+          undefined,
+          this.numberControl.value)
+        const endDate = this.endDateFrom(
+          this.selectedScopeControl.value,
+          undefined,
+          this.numberControl.value)
+
+        this.startDateControl.setValue(startDate, {emitEvent: false})
+        this.endDateControl.setValue(endDate, {emitEvent: false})
+        this.loadUserActions().subscribe()
+      })
+    ).subscribe()
+
     this.startDateControl.valueChanges.pipe(
       tap(() => {
         console.log('[profile-actions] start date changed: ', this.startDateControl.value)
+        const number = this.numberFrom(
+          this.selectedScopeControl.value,
+          this.startDateControl.value)
+        const endDate = this.endDateFrom(
+          this.selectedScopeControl.value,
+          this.startDateControl.value)
+
+        this.numberControl.setValue(number, {emitEvent: false})
+        this.endDateControl.setValue(endDate, {emitEvent: false})
         this.loadUserActions().subscribe()
       })
     ).subscribe()
@@ -84,16 +127,71 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
     this.endDateControl.valueChanges.pipe(
       tap(() => {
         console.log('[profile-actions] end date changed: ', this.endDateControl.value)
-        this.loadUserActions().subscribe()
-      })
-    ).subscribe()
+        const number = this.numberFrom(
+          this.selectedScopeControl.value,
+          this.endDateControl.value)
+        const startDate = this.startDateFrom(
+          this.selectedScopeControl.value,
+          this.endDateControl.value)
 
-    this.selectedScopeControl.valueChanges.pipe(
-      tap(() => {
-        console.log('[profile-actions] selected scope changed: ', this.selectedScopeControl.value)
+        this.numberControl.setValue(number, {emitEvent: false})
+        this.startDateControl.setValue(startDate, {emitEvent: false})
         this.loadUserActions().subscribe()
       })
     ).subscribe()
+  }
+
+  numberFrom(scope: string, date?: moment.Moment): number {
+    const startDate = moment(date) || moment()
+    const number = startDate.get(scope as moment.unitOfTime.All)
+    switch (scope) {
+      case 'date':
+        return number
+      case 'week':
+        return number
+      case 'month':
+        return number + 1
+      default:
+        return -1
+    }
+  }
+
+  startDateFrom(scope: string, date?: moment.Moment, number?: number): moment.Moment {
+    let startDate = moment(date) || moment()
+    startDate = startDate.startOf(scope as moment.unitOfTime.StartOf)
+    if (number != undefined) {
+      startDate = startDate.set(scope as moment.unitOfTime.All, number)
+    }
+
+    switch (scope) {
+      case 'date':
+        return startDate
+      case 'week':
+        return startDate.add(1, 'day')
+      case 'month':
+        return startDate
+      default:
+        return moment()
+    }
+  }
+
+  endDateFrom(scope: string, date?: moment.Moment, number?: number): moment.Moment {
+    let endDate = moment(date) || moment()
+    if (number != undefined) {
+      endDate = endDate.set(scope as moment.unitOfTime.All, number)
+    }
+    endDate = endDate.endOf(scope as moment.unitOfTime.StartOf)
+
+    switch (scope) {
+      case 'date':
+        return endDate
+      case 'week':
+        return endDate.add(1, 'day')
+      case 'month':
+        return endDate
+      default:
+        return moment()
+    }
   }
 
   loadUserActions(): Observable<LoadedActionItems> {
@@ -102,7 +200,7 @@ export class ProfileActionsComponent implements AfterViewInit, OnInit {
       this.userProfile.userID,
       this.startDateControl.value,
       this.endDateControl.value,
-      this.selectedScopeControl.value,
+      'day',
       this.sort.direction,
       this.paginator.pageIndex,
       this.paginator.pageSize

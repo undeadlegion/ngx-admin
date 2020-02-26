@@ -97,9 +97,8 @@ export class UserActivityService extends UserActivityData {
 		scope: string = 'A'
 	): Observable<ActionItem[]> {
 		const url = 'https://dev.api.avaactions.com/server_service/tools/goals'
-
-		const startString = start.toISOString().slice(0, 10)
-		const endString = end.toISOString().slice(0, 10)
+		const startString = start.toISOString(true).slice(0, 10)
+		const endString = end.toISOString(true).slice(0, 10)
 		const params = new HttpParams()
 			.set('userID', userID)
 			.set('start', startString)
