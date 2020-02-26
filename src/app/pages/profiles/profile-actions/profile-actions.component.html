@@ -4,7 +4,7 @@
   </div>
   <mat-card class="header-container">
     <mat-form-field>
-      <mat-label>Scope</mat-label>
+      <mat-label>Unit</mat-label>
       <mat-select [formControl]="selectedScopeControl">
         <mat-option *ngFor="let scope of scopes" [value]="scope.value">{{scope.viewValue}}</mat-option>
       </mat-select>
