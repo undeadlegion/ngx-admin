@@ -9,6 +9,7 @@ import { ProfileMessagesComponent } from './profiles/profile-messages/profile-me
 import { ProfileActionsComponent } from './profiles/profile-actions/profile-actions.component'
 
 import { UserProfileResolver } from '../@core/services/user-profile.resolver'
+import { ActionsComponent } from './actions/actions/actions.component'
 
 const routes: Routes = [{
 	path: '',
@@ -21,6 +22,10 @@ const routes: Routes = [{
 		{
 			path: 'profiles',
 			component: ProfilesComponent,
+		},
+		{
+			path: 'actions',
+			component: ActionsComponent
 		},
 		{
 			path: 'profiles/:userName',

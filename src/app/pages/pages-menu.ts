@@ -8,9 +8,14 @@ export const MENU_ITEMS: NbMenuItem[] = [
     home: true,
   },
   {
-	title: 'Profiles',
-	icon: 'person-outline',
-	link: '/pages/profiles',
+    title: 'Profiles',
+    icon: 'person-outline',
+    link: '/pages/profiles',
+  },
+  {
+    title: 'Actions',
+    icon: 'checkmark-circle-2-outline',
+    link: '/pages/actions'
   },
   {
     title: 'FEATURES',

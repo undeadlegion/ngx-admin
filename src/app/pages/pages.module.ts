@@ -6,6 +6,7 @@ import { PagesComponent } from './pages.component';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { PagesRoutingModule } from './pages-routing.module';
 import { ProfilesModule } from './profiles/profiles.module'
+import { ActionsModule } from './actions/actions.module'
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import { ProfilesModule } from './profiles/profiles.module'
     ThemeModule,
     NbMenuModule,
 	  DashboardModule,
-	  ProfilesModule,
+    ProfilesModule,
+    ActionsModule,
   ],
   declarations: [
     PagesComponent,
